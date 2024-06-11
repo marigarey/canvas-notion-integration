@@ -16,7 +16,7 @@ const NOTION_PAGE_ID = process.env.NOTION_PAGE_ID
 const NOTION_API_KEY = process.env.NOTION_API_KEY
 const notion = new Client({ auth: NOTION_API_KEY})
 
-async function createNewDatabase() {
+async function createDatabase() {
     try {
         const newDatabase = await notion.databases.create({
             parent: {
@@ -38,13 +38,51 @@ async function createNewDatabase() {
                  * Course
                  * Status
                  */
-            }
+                "Assignment Name": {
+                    type: "title",
+                    title: {},
+                },
+                "Due Date": {
+                    type: "date",
+                    date: {},
+                },
+                // figure out how to loop through courses and create a select per course
+                "Course": {
+                    type: "select",
+                    select: {
+                        options: [
+                            {
+                                id: "", // course ID from canvas --> will help with getting assignment information
+                                name: ""
+                            },
+                        ],
+                    },
+                },
+                "Status": {
+                    type: "status",
+                    select: {
+                        options: [
+                            {
+                                name: "Not Started",
+                                color: "default"
+                            },
+                            {
+                                name: "In Progress",
+                                color: "blue"
+                            },
+                            {
+                                name: "Done",
+                                color: "green"
+                            }
+                        ],
+                    },
+                },
+            },
         })
     }
-
-}
-
-async function createDatabase() {
+    catch (error) {
+        console.log(`ERROR! ${error}`)
+    }
 
 }
 
@@ -69,7 +107,6 @@ async function checkDatabase() {
         createDatabase()
     } catch (error) {
         console.log(`ERROR! ${error}`)
-        createNewDatabase()
     }
 }
 
