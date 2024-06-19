@@ -40,6 +40,11 @@ async function createPage(assignment_properties) {
     }
 }
 
+/**
+ * TODO finish :D
+ * create more than 10 assignments at a time
+ * Creates the assignment pages in the database.
+ */
 async function createNotionPages() {
     const assignments = await getCanvasAssignments(402200, 'CS354')
     for (let assignment of await assignments) {
@@ -58,10 +63,12 @@ async function createNotionPages() {
 }
 
 /**
+ * TODO figure out select value, and maybe other properties
  * Create Notion database with properties to describe assignments.
  */
 async function createNotionDatabase() {
     try {
+        // parameters for database, subject to change
         const newDatabase = await notion.databases.create({
             parent: {
                 type: "page_id",
@@ -114,6 +121,7 @@ async function createNotionDatabase() {
 
 /**
  * TODO finish this method :D
+ * add properties, change propeties etc
  */
 async function updateNotionDatabase() {
     try {
@@ -135,6 +143,7 @@ async function updateNotionDatabase() {
 
 /**
  * TODO finish this method :D
+ * update page properties, add properties if not addedß
  */
 async function updateNotionPages() {
 }
@@ -142,6 +151,15 @@ async function updateNotionPages() {
 //*========================================================================
 // VERIFIERS
 //*========================================================================
+
+/**
+ * TODO this :D
+ * check if an assignment needs to be added (aka doesn't exist)
+ * or if it needs to be updated (exists but not equivalent to page in database)
+ */
+async function checkNotionPages() {
+
+}
 
 /**
  * Check if the course assignment database exists.
@@ -323,6 +341,3 @@ function setEnvValue(key, value) {
     // write everything back to the file system
     fs.writeFileSync("./.env", ENV_VARS.join(os.EOL));
 }
-
-//checkNotionDatabase()
-//createNotionPages()
