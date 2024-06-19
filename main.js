@@ -2,7 +2,6 @@
  * npm i @notionhq/client
  * npm i dotenv
  * npm i --save lodash
- * hello
  */
 
 const { Client, APIErrorCode } = require("@notionhq/client")
