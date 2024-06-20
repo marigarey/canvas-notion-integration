@@ -4,21 +4,21 @@
  * npm i --save lodash
  */
 
+const { test, tester} = require("./test")
+
 const { Client, APIErrorCode } = require("@notionhq/client")
+const { CanvasHelper } = require("./canvashelper")
+const { NotionHelper } = require("./notionhelper")
+
 const dotenv = require("dotenv").config({override: true})
-const fs = require("fs");
-const os = require("os");
-const _ = require("lodash")
 
-const CANVAS_API_URL = process.env.CANVAS_API_URL
-const CANVAS_API = process.env.CANVAS_API
-const CANVAS_USER_ID = process.env.CANVAS_USER_ID
+const canvash = new CanvasHelper()
+const notionh = new NotionHelper()
 
-const NOTION_PAGE = process.env.NOTION_PAGE
-const NOTION_API = process.env.NOTION_API
-const notion = new Client({ auth: NOTION_API})
+const notion = new Client({ auth: notionh.token})
 
-const BATCH_SIZE = 10
+// TODO order the notion calls
+// figure out maybe how to run the file in the background so it doesn't have to manually run
 
 /**
  * Creates a page and adds it to the Notion database.
@@ -30,11 +30,11 @@ async function createPage(assignment_properties) {
         const newPage = await notion.pages.create({
             parent: {
                 type: "database_id",
-                database_id: process.env.NOTION_DATABASE
+                database_id: notionh.database_id
             },
             properties: assignment_properties,
         })
-        console.log(`SUCCESS: new page has been created!`)
+        console.log(`SUCCESS: new page ${assignment_properties.ID.number} has been created!`)
     } catch (error) {
         console.log(`ERROR: ${error}`)
     }
@@ -43,27 +43,24 @@ async function createPage(assignment_properties) {
 /**
  * TODO finish :D
  * create more than 10 assignments at a time
+ * also loop through each course!
  * Creates the assignment pages in the database.
+ * @param {number} courseID
+ * @param {string} courseName  
  */
-async function createNotionPages() {
-    const assignments = await getCanvasAssignments(402200, 'CS354')
+async function createNotionPages(courseID, courseName) {
+    const assignments = await canvash.getCourseAssignments(courseID, courseName)
     for (let assignment of await assignments) {
-        //await createPage(await assignment)
+        if (await checkNotionPages(assignment.ID.number) == 0) {
+            await updateNotionPages(assignment)
+        } else {
+            await createPage(assignment)
+        }
     }
-    /**const pagesToCreateChunks = _.chunk(pagesToCreate, OPERATION_BATCH_SIZE)
-    for (const pagesToCreateBatch of pagesToCreateChunks) {
-    await Promise.all(
-      pagesToCreateBatch.map(issue =>
-        notion.pages.create({
-          parent: { database_id: databaseId },
-          properties: getPropertiesFromIssue(issue),
-        })
-      )
-    )}**/
 }
 
 /**
- * TODO figure out select value, and maybe other properties
+ * TODO figure out status value, and maybe other properties
  * Create Notion database with properties to describe assignments.
  */
 async function createNotionDatabase() {
@@ -72,7 +69,7 @@ async function createNotionDatabase() {
         const newDatabase = await notion.databases.create({
             parent: {
                 type: "page_id",
-                page_id: NOTION_PAGE,
+                page_id: notionh.pageId,
             },
             title: [
                 {
@@ -93,7 +90,7 @@ async function createNotionDatabase() {
                 },
                 "Course": {
                     select: {
-                        options: await getCanvasCourses(),
+                        options: await canvash.courses,
                     },
                 },
                 "Completion": {
@@ -111,7 +108,10 @@ async function createNotionDatabase() {
         console.log(`SUCCESS: Canvas Assignments database has been created!`)
 
         // set database id in the environment
-        setNotionDatabaseID(newDatabase.id)
+        notionh.databaseId = newDatabase.id
+
+        // populate database
+        createAllAssignments()
     }
     catch (error) {
         console.log(`ERROR: ${error}`)
@@ -122,6 +122,7 @@ async function createNotionDatabase() {
 /**
  * TODO finish this method :D
  * add properties, change propeties etc
+ * 
  */
 async function updateNotionDatabase() {
     try {
@@ -130,14 +131,25 @@ async function updateNotionDatabase() {
             properties: {
                 "Course": {
                     select: {
-                        options: await getCanvasCourses()
-                    }
-                }
-            }
+                        options: await canvash.courses,
+                    },
+                },
+            },
         })
-        //console.log(response)
+        console.log(`SUCCESS: Database ${response.title} has been updated!`)
     } catch (error) {
-        console.log('update database error!')
+        console.log(`ERROR: Database could not be update! ${error}`)
+    }
+}
+
+/**
+ * AHHHHHHH
+ */
+async function createAllAssignments() {
+    const courses = await canvash.courses
+
+    for (let i = 0; i < courses.length; i++) {
+        createNotionPages(courses[i].id, courses[i].name)
     }
 }
 
@@ -156,9 +168,18 @@ async function updateNotionPages() {
  * TODO this :D
  * check if an assignment needs to be added (aka doesn't exist)
  * or if it needs to be updated (exists but not equivalent to page in database)
+ * @param {number} pageID 
+ * @returns {boolean}
  */
-async function checkNotionPages() {
-
+async function checkNotionPages(pageID) {
+    const pages = notionh.pages
+    if ((await pages).includes(pageID) == true) {
+        console.log(`FOUND: Assignment ${pageID} exists!`)
+        return false
+    } else {
+        console.log(`NOT FOUND: Assignment ${pageID} does not exist in database`)
+        return true
+    }
 }
 
 /**
@@ -168,7 +189,7 @@ async function checkNotionDatabase() {
     try {
         // find database using id
         const response = await notion.databases.retrieve({
-            database_id: process.env.NOTION_DATABASE
+            database_id: notionh.databaseId
         })
         // database exists, update possible values
         console.log('FOUND: Database exists! Retrieving database data...')
@@ -185,6 +206,7 @@ async function checkNotionDatabase() {
 }
 
 /**
+ * IGNORE
  * Checks if an assignment is already in the database.
  * 
  * @param {number} checkID
@@ -196,9 +218,9 @@ async function checkNotionID(checkID) {
         const response = notion.databases.query({
             database_id: process.env.NOTION_DATABASE,
             filter: {
-                property: "Hidden ID",
+                property: "ID",
                 number: {
-                    equals: checkProperty
+                    equals: checkID
                 }
             }
         })
@@ -214,130 +236,4 @@ async function checkNotionID(checkID) {
             console.log(`ERROR: ${error}`)
         }
     }
-}
-
-//*========================================================================
-// HELPERS
-//*========================================================================
-
-/**
- * Retrieves user's Canvas id.
- * 
- * @returns {Promise<Array<{ id: string, name: string}}
- */
-async function getCanvasCourses() {
-    // Canvas API connection
-    const url = `${CANVAS_API_URL}/api/v1/courses?access_token=${CANVAS_API}`
-    const response = await fetch(url)
-    const courses = await response.json()
-
-    // Convert each course for Notion API, only courses that are currently active
-    const course_option = await courses
-        .filter(course => typeof course.name !== 'undefined' && course.end_at > new Date().toJSON())
-        .map(course => ({
-            id: course.id.toString(),
-            name: course.name
-        }))
-
-    // list of the active courses
-    return await course_option
-}
-
-/**
- * Retrieves the assignments from the Canvas API for a specific course.
- * 
- * @param {number} courseID 
- * @param {string} courseName 
- * @returns {Promise<Array<{ name: string, date: string, course: string, id: string }>>}
- */
-async function getCanvasAssignments(courseID, courseName) {
-    // Canvas API connection
-    const url = `${CANVAS_API_URL}/api/v1/users/${CANVAS_USER_ID}/courses/${courseID}/assignments?access_token=${CANVAS_API}`
-    const response = await fetch(url)
-    const assignments = await response.json()
-
-    // Convert each assignment for the Notion API, only for assignments that are named
-    const assignment_list = await assignments
-    .filter(assignment => typeof assignment.name !== 'undefined')
-    .map(assignment => ({
-        "Assignment Name": {
-            type: "title",
-            title: [{
-                type: "text",
-                text: { content: assignment.name }
-            }]
-        },
-        "Due Date": {
-            type: "date",
-            date: { start: assignment.due_at || '2024-09-10'}
-        },
-        "Course": {
-            select: {
-                name: courseName
-            }
-        },
-        "Hidden ID": {
-            type: "number",
-            number: assignment.id,
-        },
-    }))
-
-    // list of assignments for the course
-    return await assignment_list
-}
-
-/**
- * Sets the CANVAS_USER_ID /.env variable.
- */
-async function setCanvasUserID() {
-
-    // access canvas api
-    const url = `${CANVAS_API_URL}/api/v1/courses?access_token=${CANVAS_API}`
-    const response = await fetch(url)
-    const courses = await response.json()
-
-    // use first item that has a defined name (course exists)
-    const course_option = await courses.filter(course => typeof course.name !== 'undefined')
-
-    // sets user_id in the environment
-    console.log('Updating CANVAS_USER_ID to new value...')
-    setEnvValue('CANVAS_USER_ID', `'${course_option[0]["enrollments"][0]["user_id"]}'`)
-    console.log('Update for CANVAS_USER_ID successful!')
-}
-
-/**
- * Sets the NOTION_DATABASE /.env variable.
- * 
- * @param {string} databaseID
- */
-async function setNotionDatabaseID(databaseID) {
-    // sets user_id in the environment
-    console.log('Updating NOTION_DATABASE to new value...')
-    setEnvValue('NOTION_DATABASE', `'${databaseID}'`)
-    console.log('Update for NOTION_DATABASE successful!')
-}
-
-/**
- * Creates or updates /.env values.
- * 
- * @source https://stackoverflow.com/questions/64996008/update-attributes-in-env-file-in-node-js
- * 
- * @param {string} key
- * @param {string} value
- */
-function setEnvValue(key, value) {
-
-    // read file from hdd & split if from a linebreak to a array
-    const ENV_VARS = fs.readFileSync("./.env", "utf8").split(os.EOL);
-
-    // find the env we want based on the key
-    const target = ENV_VARS.indexOf(ENV_VARS.find((line) => {
-        return line.match(new RegExp(key));
-    }));
-
-    // replace the key/value with the new value
-    ENV_VARS.splice(target, 1, `${key}=${value}`);
-
-    // write everything back to the file system
-    fs.writeFileSync("./.env", ENV_VARS.join(os.EOL));
 }
