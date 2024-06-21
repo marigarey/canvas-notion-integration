@@ -51,6 +51,6 @@ node main.js
 > 1. Go to `...` on the top right of your database
 > 2. Click on the `Properties` Tab
 > 3. Click the eye on the `ID` Property
->   <img src="./img/IDProperty.png" width="100"> → <img src="./img/IDPropertyHidden.png" width="100">
+> <img src="./img/IDProperty.png" width="200"> → <img src="./img/IDPropertyHidden.png" width="200">
 
 
