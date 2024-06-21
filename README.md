@@ -1,4 +1,5 @@
 # Canvas to Notion Integration
+View your Canvas assignments in Notion created by Mari Garey!
 
 <img src="./img/canvasNotionIntegration.png" width="500"/>
 
@@ -7,8 +8,18 @@
 Using this repository you will be able to export all of your assignments from Canvas to a Notion Database!
 Following the instructions below will help you set up the database!
 
+### Support the Creator!
+
+* Give a ⭐️ to the repository <sub>please and thank you 🤗</sub>
+* Submit a PR for feedback or in the Discussion Tab
+* Watch the demo on YT and give it a 👍 
+
 
 ## Using the Canvas to Notion Integration
+
+### Video Tutorial
+
+*Coming Soon*
 
 ### 1. Project Setup
 
