@@ -4,6 +4,16 @@
 
 ## Introduction
 
+```zsh
+# Clone this repository to your computer
+
+# Open this project
+cd canvas-notion-integration
+
+# Install dependencies
+npm install
+```
+
 ## Using the Canvas to Notion Integration
 
 ### 1. Project Setup
