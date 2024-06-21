@@ -1,6 +1,6 @@
 # Canvas to Notion Integration
 
-<img src="./img/CanvasToNotion.png">
+<img src="./img/CanvasToNotion.png" width="500"/>
 
 ## Introduction
 
