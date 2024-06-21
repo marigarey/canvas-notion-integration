@@ -4,6 +4,11 @@
 
 ## Introduction
 
+Using this repository you will be able to export all of your assignments from Canvas to a Notion Database!
+Following the instructions below will help you set up the database!
+
+I will be updating the 
+
 ## Using the Canvas to Notion Integration
 
 ### 1. Project Setup
@@ -21,6 +26,20 @@ npm install
 
 ### 2. Canvas Token Access
 
+Go to your Canvas Profile Settings and scroll down to `Approved Integrations`.
+<img src="img/CanvasIntegrationNAT.png">
+    Click on `+ New Access Token` to create the token.
+
+<img src="img/CanvasIntegrationToken.png">
+    Name your Token, and leave the date blank to have no expiration date.
+
+<img src="img/CanvasIntegrationDetails.png">
+    Once the Token is generated, copy the Token string
+
+> [!WARNING]
+> Once you move away from that screen you will not be able to access the token string!
+> Make sure to save the Token string now!
+
 ### 3. Notion API Key Access
 
 ### 4. Notion Integration Creation
@@ -30,11 +49,11 @@ npm install
 ### 6. Environment Variable `.env` file Setup
 
 ```
-CANVAS_API_URL=<example: https://canvas-page.edu> # see 2. for more information
-CANVAS_API=<your canvas api token> # see 2. for more information
-NOTION_PAGE=<page id of the parent page to create the database> # see 5. for more information
-NOTION_API=<your notion api key> # see 4. for more information
-NOTION_DATABASE='invalid' # database id will be filled in when you run the script
+CANVAS_API_URL=<example: https://canvas-page.edu>
+CANVAS_API=<your canvas api token>
+NOTION_PAGE=<page id of the parent page to create the database>
+NOTION_API=<your notion api key>
+NOTION_DATABASE='default'
 ```
 
 ### 7. Run Code
@@ -42,6 +61,10 @@ NOTION_DATABASE='invalid' # database id will be filled in when you run the scrip
 ```zhs
 node main.js
 ```
+
+> [!IMPORTANT]
+> To update your database you will have to run the script every time there is a change in Canvas
+> It is recomended to rerun the code every semester or class/assignment changes
 
 ## Other Information
 
@@ -51,6 +74,6 @@ node main.js
 > 1. Go to `...` on the top right of your database
 > 2. Click on the `Properties` Tab
 > 3. Click the eye on the `ID` Property
-> <img src="./img/IDProperty.png" width="200"> → <img src="./img/IDPropertyHidden.png" width="200">
+> 4. It should get crossed out and disapear from your database!
 
 
