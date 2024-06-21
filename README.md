@@ -25,7 +25,7 @@ Following the instructions below will help you set up the database!
 
 ```zsh
 # Clone this repository to your computer
-gh repo clone marilg/canvas-notion-integration
+git clone https://github.com/marigarey/canvas-notion-integration.git
 
 # Open this project
 cd canvas-notion-integration
