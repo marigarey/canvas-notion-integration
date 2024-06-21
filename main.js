@@ -43,7 +43,7 @@ async function createPage(assignment_properties) {
 async function createNotionPages(courseID, courseName) {
     const assignments = await canvash.getCourseAssignments(courseID, courseName)
     for (let assignment of await assignments) {
-        if (checkNotionPages(assignment.ID.number)) {
+        if (checkNotionPages(await assignment.ID.number)) {
             await updateNotionPages(assignment)
         } else {
             await createPage(assignment)
@@ -154,7 +154,7 @@ async function updateNotionDatabase() {
  */
 async function updateNotionPages(assignment) {
     try {
-        console.log(notionh.pages)
+        //console.log(await notionh.pages)
     } catch (error) {
         console.log(`ERROR: Could not update page ${assignment.ID.number}`)
     }

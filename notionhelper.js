@@ -1,7 +1,7 @@
 const { Client, APIErrorCode } = require("@notionhq/client")
 const dotenv = require("dotenv").config({override: true})
 const notion = new Client({ auth: process.env.NOTION_API})
-const { setEnvValue } = require("../util")
+const { setEnvValue } = require("./util")
 
 class NotionHelper {
 
