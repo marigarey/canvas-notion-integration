@@ -29,10 +29,10 @@ Go to your Canvas Profile Settings and scroll down to `Approved Integrations`.
 <img src="img/CanvasIntegrationNAT.png">
     Click on `+ New Access Token` to create the token.
 
-<img src="img/CanvasIntegrationToken.png">
+<img src="img/CanvasIntegrationToken.png" width="400">
     Name your Token, and leave the date blank to have no expiration date.
 
-<img src="img/CanvasIntegrationDetails.png">
+<img src="img/CanvasIntegrationDetails.png" width="400">
     Once the Token is generated, copy the Token string.
 
 This string will be your **Canvas API Key**
@@ -48,14 +48,14 @@ Pull up the [Notion - My Integrations](https://www.notion.so/my-integrations) si
 Enter the name of the integration (ie Canvas Notion Integration) and what workspace the Integration will apply to.
 In the `Secrets` tab and copy the _Internal Integration Secret_ this will be your **Notion API Key**.
 
-<img src="/img/NotionIntegration.gif" width="400">
+<img src="/img/NotionIntegration.gif" width="500">
 
 ### 4. Create Integration within Notion
 
 Head to whatever Notion Page you want to put the database in and click on `...` in the top right.
 Scroll down to `+ Add Connections`. Find and select the integration. Make sure to click confirm.
 
-<img src="/img/NotionPermissions.gif" width="400">
+<img src="/img/NotionPermissions.gif" width="500">
 
 ### 5. Environment Variable `.env` file Setup
 Create a `.env` file and replace all the <> with your own information.
@@ -92,6 +92,6 @@ If you have any suggestions on what I should, please let me know! I want to hear
 > 3. Click the eye on the `ID` Property
 > 4. It should get crossed out and disapear from your database!
 
-[^1]: (Source of Gifs and for more information on Notion Integrations)[https://developers.notion.com/docs/create-a-notion-integration]
+[^1]: [Source of Gifs and for more information on Notion Integrations](https://developers.notion.com/docs/create-a-notion-integration)
 
 
