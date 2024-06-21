@@ -4,6 +4,10 @@
 
 ## Introduction
 
+## Using the Canvas to Notion Integration
+
+### 1. Project Setup
+
 ```zsh
 # Clone this repository to your computer
 
@@ -13,10 +17,6 @@ cd canvas-notion-integration
 # Install dependencies
 npm install
 ```
-
-## Using the Canvas to Notion Integration
-
-### 1. Project Setup
 
 ### 2. Canvas Token Access
 
@@ -28,5 +28,17 @@ npm install
 
 ### 6. Environment Variable `.env` file Setup
 
+```
+CANVAS_API_URL=<example: https://canvas-page.edu> # see 2. for more information
+CANVAS_API=<your canvas api token> # see 2. for more information
+NOTION_PAGE=<page id of the parent page to create the database> # see 5. for more information
+NOTION_API=<your notion api key> # see 4. for more information
+NOTION_DATABASE='invalid' # database id will be filled in when you run the script
+```
+
 ### 7. Run Code
+
+```zhs
+node main.js
+```
 
