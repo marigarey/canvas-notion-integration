@@ -1,10 +1,39 @@
 const dotenv = require("dotenv").config({override: true})
 
 class CanvasHelper { 
+
+    url
+    api
+    user
+
     constructor() {
         this.url = process.env.CANVAS_API_URL
         this.api = process.env.CANVAS_API
         this.user = this.defineUser()
+    }
+
+    set url(url) {
+        this.url = url
+    }
+
+    get url() {
+        return this.url
+    }
+
+    set api(api) {
+        this.api = api
+    }
+
+    get api() {
+        return this.api
+    }
+
+    set user(user) {
+        this.user = user
+    }
+
+    get user() {
+        return this.user
     }
 
     get courses() {
@@ -62,7 +91,6 @@ class CanvasHelper {
         const url = `${this.url}/api/v1/users/${await this.user}/courses/${courseID}/assignments?access_token=${this.api}&per_page=50`
         const response = await fetch(url)
         const assignments = await response.json()
-        console.log(assignments)
 
         // Convert each assignment for the Notion API, only for assignments that are named
         const assignment_list = await assignments

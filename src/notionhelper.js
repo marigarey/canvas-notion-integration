@@ -1,16 +1,23 @@
+const { Client, APIErrorCode } = require("@notionhq/client")
 const dotenv = require("dotenv").config({override: true})
 const notion = new Client({ auth: process.env.NOTION_API})
-const { setEnvValue } = require("./util")
+const { setEnvValue } = require("../util")
 
 class NotionHelper {
+
+    token
+    pageId
+    databaseId
+
     constructor() {
         this.token = process.env.NOTION_API
         this.pageId = process.env.NOTION_PAGE
+        this.databaseId = process.env.NOTION_DATABASE
     }
 
     set databaseId(databaseId) {
         this.databaseId = databaseId // change later
-        this.setNotionDatabaseID(this.databaseId)
+        this.setDatabaseId(this.databaseId)
     }
 
     get databaseId() {
@@ -21,8 +28,16 @@ class NotionHelper {
         return this.getNotionPages()
     }
 
+    set pageId(pageId) {
+        this.pageId = pageId
+    }
+
     get pageId() {
         return this.pageId
+    }
+
+    set token(token) {
+        this.token = token
     }
 
     get token() {
@@ -30,7 +45,7 @@ class NotionHelper {
     }
 
     /**
-     * TODO get notion assignment
+     * Gets all pages in Database
      */
     async getNotionPages() {
         const response = await notion.databases.query({
@@ -47,7 +62,7 @@ class NotionHelper {
      * 
      * @param {string} databaseID
      */
-    async setNotionDatabaseID(databaseID) {
+    async setDatabaseId(databaseID) {
         // sets user_id in the environment
         console.log('Updating NOTION_DATABASE to new value...')
         setEnvValue('NOTION_DATABASE', `'${databaseID}'`)
