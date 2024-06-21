@@ -10,6 +10,7 @@
 
 ```zsh
 # Clone this repository to your computer
+gh repo clone marilg/canvas-notion-integration
 
 # Open this project
 cd canvas-notion-integration
@@ -41,4 +42,15 @@ NOTION_DATABASE='invalid' # database id will be filled in when you run the scrip
 ```zhs
 node main.js
 ```
+
+## Other Information
+
+> [!NOTE]
+> The ID Property is for internal use and you can hide it in your database
+> Hiding a Property:
+> 1. Go to `...` on the top right of your database
+> 2. Click on the `Properties` Tab
+> 3. Click the eye on the `ID` Property
+>   <img src="./img/IDProperty.png"> → <img src="./img/IDPropertyHidden.png">
+
 
