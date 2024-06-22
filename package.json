@@ -7,7 +7,7 @@
     "homepage": "http://nodemon.io",
     "...": "... other standard package.json values",
     "nodemonConfig": {
-      "ignore": ["**/test/**", "**/docs/**"],
+      "ignore": ["**/img/**"],
       "delay": 2500
   },
   "license":"MIT"
