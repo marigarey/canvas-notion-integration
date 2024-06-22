@@ -161,10 +161,6 @@ async function updateNotionPages(assignment) {
     }
 }
 
-//*========================================================================
-// VERIFIERS
-//*========================================================================
-
 /**
  * Check if assignment exists in the Notion Database
  * Returns true if exists, false otherwise
