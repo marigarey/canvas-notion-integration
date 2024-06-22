@@ -1,9 +1,7 @@
 {
   "dependencies": {
-    "@kth/canvas-api": "^4.2.6",
     "@notionhq/client": "^2.2.15",
-    "dotenv": "^16.4.5",
-    "lodash": "^4.17.21"
+    "dotenv": "^16.4.5"
   },
 
   "license":"MIT"
