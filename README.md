@@ -29,10 +29,28 @@ git clone https://github.com/marigarey/canvas-notion-integration.git
 
 # Open this project
 cd canvas-notion-integration
+```
 
+#### Without Docker
+```zsh
 # Install dependencies
 npm install
 ```
+
+#### With Docker
+```zsh
+# Build image
+docker -t canvas-notion-integration build .
+```
+
+> [!NOTE]
+> This step is not required on most architectures. GHCR should have built the latest version on the following architectures:
+> - `linux/amd64`
+> - `linux/arm/v6`
+> - `linux/arm/v7`
+> - `linux/arm64`
+> - `linux/ppc64le`
+> - `linux/s390x`
 
 ### 2. Canvas Token Access
 
@@ -82,13 +100,22 @@ NOTION_DATABASE='default'
 
 ### 6. Run Code
 
-```zhs
-node main.js
-```
-
 > [!IMPORTANT]
 > To update your database you will have to run the script every time there is a change in Canvas
 > It is recomended to rerun the code every semester or class/assignment changes
+
+#### Without Docker
+```zsh
+node main.js
+```
+
+#### With Docker
+```zsh
+docker run --env-file ./.env canvas-notion-integration
+```
+
+> [!NOTE]
+> If you did not choose to build the image yourself, you can replace `canvas-notion-integration` with `ghcr.io/marigarey/canvas-notion-integration:latest`
 
 ## Other Information
 
