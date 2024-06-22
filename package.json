@@ -3,6 +3,12 @@
     "@notionhq/client": "^2.2.15",
     "dotenv": "^16.4.5"
   },
-
+    "name": "nodemon",
+    "homepage": "http://nodemon.io",
+    "...": "... other standard package.json values",
+    "nodemonConfig": {
+      "ignore": ["**/test/**", "**/docs/**"],
+      "delay": 2500
+  },
   "license":"MIT"
 }
