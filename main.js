@@ -44,11 +44,7 @@ async function createPage(assignment_properties) {
 async function createNotionPages(courseID, courseName) {
     const assignments = await canvash.getCourseAssignments(courseID, courseName)
     for (let assignment of await assignments) {
-        if (checkNotionPages(await assignment.ID.number)) {
-            await updateNotionPages(assignment)
-        } else {
-            await createPage(assignment)
-        }
+        checkNotionPages(await assignment.ID.number, assignment)
     }
 }
 
@@ -95,6 +91,22 @@ async function createNotionDatabase() {
                         format: "number"
                     }
                 },
+                /**"children": [
+                {
+                    object: "block",
+                    type: "paragraph",
+                    paragraph: {
+                        rich_text: [{
+                          type: "text",
+                          text: {
+                            content: '',
+                            "link": null
+                          }
+                        }],
+                        "color": "default"
+                    },
+                }
+                ]**/
             },
         })
         console.log(`SUCCESS: Canvas Assignments database has been created!`)
@@ -155,7 +167,6 @@ async function updateNotionDatabase() {
  */
 async function updateNotionPages(assignment) {
     try {
-        //console.log(await notionh.pages)
     } catch (error) {
         console.log(`ERROR: Could not update page ${assignment.ID.number}`)
     }
@@ -167,14 +178,16 @@ async function updateNotionPages(assignment) {
  * @param {number} pageID 
  * @returns {boolean}
  */
-async function checkNotionPages(pageID) {
+async function checkNotionPages(pageID, assignment) {
     const pages = await notionh.pages
     if ((await pages).includes(pageID) == true) {
         console.log(`FOUND: Assignment ${pageID} exists!`)
-        return true
+        console.log("Updating assignment...")
+        await updateNotionPages(assignment)
     } else {
         console.log(`NOT FOUND: Assignment ${pageID} does not exist in database`)
-        return false
+        console.log("Creating new assignment...")
+        await createPage(assignment)
     }
 }
 

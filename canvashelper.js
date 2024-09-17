@@ -5,11 +5,13 @@ class CanvasHelper {
     url
     api
     user
+    courses
 
     constructor() {
         this.url = process.env.CANVAS_API_URL
         this.api = process.env.CANVAS_API
         this.user = this.defineUser()
+        this.courses = this.getCourses()
     }
 
     set url(url) {
@@ -36,8 +38,16 @@ class CanvasHelper {
         return this.user
     }
 
+    set courses(courses) {
+        this.courses = courses
+    }
+
     get courses() {
-        return this.getCourses()
+        return this.courses
+    }
+
+    async updateCourses() {
+        this.courses = this.getCourses()
     }
 
     /**
@@ -57,15 +67,30 @@ class CanvasHelper {
     }
 
     /**
+     * TODO figure out if this method is even worth it 💀 
+     */
+    async getCourse(courseID) {
+        const url = `${this.url}/api/v1/courses/${courseID}?access_token=${this.api}`
+        const response = await fetch(url)
+        const course = await response.json()
+
+        return await ({
+            id: course.id.toString(),
+            name: course.name
+        })
+    }
+
+    /**
      * Retrieves user's Canvas id.
      * 
      * @returns {Promise<Array<{ id: string, name: string}}
      */
     async getCourses() {
         // Canvas API connection
-        const url = `${this.url}/api/v1/courses?access_token=${this.api}`
+        const url = `${this.url}/api/v1/courses?access_token=${this.api}&per_page=100`
         const response = await fetch(url)
         const courses = await response.json()
+        console.log(courses)
 
         // Convert each course for Notion API, only courses that are currently active
         const courseList = await courses
@@ -77,6 +102,35 @@ class CanvasHelper {
 
         // list of the active courses
         return await courseList
+    }
+
+    async getCourseAssignment(courseID, assignmentID) {
+        const url = `${this.url}/api/v1/users/${await this.user}/courses/${courseID}/assignments/${assignmentID}?access_token=${this.api}`
+        const response = await fetch(url)
+        const assignment = await response.json()
+
+        return await ({
+            "Assignment Name": {
+                type: "title",
+                title: [{
+                    type: "text",
+                    text: { content: assignment.name }
+                }]
+            },
+            "Due Date": {
+                type: "date",
+                date: { start: assignment.due_at || '2020-09-10'}
+            },
+            "Course": {
+                select: {
+                    name: courseName
+                }
+            },
+            "ID": {
+                type: "number",
+                number: assignment.id,
+            },
+        })
     }
 
     /**
@@ -91,6 +145,7 @@ class CanvasHelper {
         const url = `${this.url}/api/v1/users/${await this.user}/courses/${courseID}/assignments?access_token=${this.api}&per_page=50`
         const response = await fetch(url)
         const assignments = await response.json()
+        //console.log(await assignments)
 
         // Convert each assignment for the Notion API, only for assignments that are named
         const assignment_list = await assignments
@@ -105,7 +160,7 @@ class CanvasHelper {
             },
             "Due Date": {
                 type: "date",
-                date: { start: assignment.due_at || '2024-09-10'}
+                date: { start: assignment.due_at || '2020-09-10'}
             },
             "Course": {
                 select: {
@@ -116,6 +171,22 @@ class CanvasHelper {
                 type: "number",
                 number: assignment.id,
             },
+            /**"children": [
+                {
+                    object: "block",
+                    type: "paragraph",
+                    paragraph: {
+                        rich_text: [{
+                          type: "text",
+                          text: {
+                            content: assignment.description,
+                            "link": null
+                          }
+                        }],
+                        "color": "default"
+                    },
+                }
+            ]**/
         }))
 
         // list of assignments for the course
