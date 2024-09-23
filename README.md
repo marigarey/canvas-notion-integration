@@ -89,11 +89,12 @@ Scroll down to `+ Add Connections`. Find and select the integration. Make sure t
 ### 5. Environment Variable `.env` file Setup
 Create a `.env` file and replace all the <> with your own information.
 *Keep the `NOTION_DATABASE` variable as is because it will be overwritten when you run the code*
+`NOTION_PAGE` example: https://www.notion.so/{name}/{page}-**0123456789abcdefghijklmnopqrstuv**?{otherstuff}
 
 ```
 CANVAS_API_URL=<example: https://canvas-page.edu>
 CANVAS_API=<your canvas api token>
-NOTION_PAGE=<page id of the parent page to create the database> # example: https://www.notion.so/{name}/{page}-**0123456789abcdefghijklmnopqrstuv**?{otherstuff}
+NOTION_PAGE=<page id of the parent page to create the database>
 NOTION_API=<your notion api key> # filled by user
 NOTION_DATABASE='invalid' # filled by integration
 ```
