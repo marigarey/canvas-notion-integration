@@ -93,9 +93,9 @@ Create a `.env` file and replace all the <> with your own information.
 ```
 CANVAS_API_URL=<example: https://canvas-page.edu>
 CANVAS_API=<your canvas api token>
-NOTION_PAGE=<page id of the parent page to create the database>
-NOTION_API=<your notion api key>
-NOTION_DATABASE='default'
+NOTION_PAGE=<page id of the parent page to create the database> # example: https://www.notion.so/{name}/{page}-**0123456789abcdefghijklmnopqrstuv**?{otherstuff}
+NOTION_API=<your notion api key> # filled by user
+NOTION_DATABASE='invalid' # filled by integration
 ```
 
 ### 6. Run Code
