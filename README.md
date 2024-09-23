@@ -89,7 +89,11 @@ Scroll down to `+ Add Connections`. Find and select the integration. Make sure t
 ### 5. Environment Variable `.env` file Setup
 Create a `.env` file and replace all the <> with your own information.
 *Keep the `NOTION_DATABASE` variable as is because it will be overwritten when you run the code*
-`NOTION_PAGE` example: https://www.notion.so/{name}/{page}-**0123456789abcdefghijklmnopqrstuv**?{otherstuff}
+> [!HELP]
+> How to Access the Key for the `NOTION_PAGE`:
+> 1. On the desired Notion page, click `Share` then `🔗 Copy link`
+> 2. Paste the link down, example url: notion.so/{name}/{page}-**0123456789abcdefghijklmnopqrstuv**?{otherstuff}
+> 3. Copy the string of 32 letter and number combination to the `.env` file
 
 ```
 CANVAS_API_URL=<example: https://canvas-page.edu>
