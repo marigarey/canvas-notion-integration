@@ -136,5 +136,5 @@ If you have any suggestions on what I should, please let me know! I want to hear
 > 4. It should get crossed out and disapear from your database!
 
 [^1]: [Source of Gifs and for more information on Notion Integrations](https://developers.notion.com/docs/create-a-notion-integration)
-
+<sub>Other: Docker addition doesn't run because the .env file is not set up</sub>
 
