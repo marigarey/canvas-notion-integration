@@ -130,6 +130,10 @@ class CanvasHelper {
                 type: "number",
                 number: assignment.id,
             },
+            "URL" : {
+                type: "url",
+                url: assignment.html_url,
+            }
         })
     }
 
@@ -171,6 +175,10 @@ class CanvasHelper {
                 type: "number",
                 number: assignment.id,
             },
+            "URL" : {
+                type: "url",
+                url: assignment.html_url,
+            }
             /**"children": [
                 {
                     object: "block",
