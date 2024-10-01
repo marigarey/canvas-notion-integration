@@ -5,6 +5,11 @@ View your Canvas assignments in Notion created by Mari Garey!
 
 ## Introduction
 
+> [!IMPORTANT]
+> There will be an overhaul on this repo to make it more manageable!
+> I will be looking into adding additional features as well, so if
+> you have any ideas, let me know!
+
 Using this repository you will be able to export all of your assignments from Canvas to a Notion Database!
 Following the instructions below will help you set up the database!
 
