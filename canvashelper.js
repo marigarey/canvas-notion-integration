@@ -1,3 +1,5 @@
+const { setEnvValue } = require("./util")
+
 /**
  * Assists with storing User's Canvas information
  * @author Mari Garey
@@ -54,8 +56,8 @@ class CanvasHelper {
      */
     async getUserId() {
         // Connect to CanvasAPI
-        const domain = `${this.url}/api/v1/courses?access_token=${this.api}`
-        const response = await fetch(domain)
+        const url = `${this.url}/api/v1/courses?access_token=${this.api}`
+        const response = await fetch(url)
         const courses = await response.json()
 
         // Access first availible Course
@@ -86,39 +88,6 @@ class CanvasHelper {
 
         // list of the active courses
         return await courseList
-    }
-
-    async getCourseAssignment(courseID, assignmentID) {
-        const url = `${this.url}/api/v1/users/${await this.user}/courses/${courseID}/assignments/${assignmentID}?access_token=${this.api}`
-        const response = await fetch(url)
-        const assignment = await response.json()
-
-        return await ({
-            "Assignment Name": {
-                type: "title",
-                title: [{
-                    type: "text",
-                    text: { content: assignment.name }
-                }]
-            },
-            "Due Date": {
-                type: "date",
-                date: { start: assignment.due_at || '2020-09-10'}
-            },
-            "Course": {
-                select: {
-                    name: courseName
-                }
-            },
-            "ID": {
-                type: "number",
-                number: assignment.id,
-            },
-            "URL" : {
-                type: "url",
-                url: assignment.html_url,
-            }
-        })
     }
 
     /**

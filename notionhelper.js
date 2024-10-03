@@ -1,27 +1,26 @@
 const { Client, APIErrorCode } = require("@notionhq/client")
-const dotenv = require("dotenv").config({override: true})
-const notion = new Client({ auth: process.env.NOTION_API})
+const Notion = new Client({ auth: process.env.NOTION_API})
 const { setEnvValue } = require("./util")
 
 class NotionHelper {
 
-    token
-    pageId
-    databaseId
+    api // notion api key
+    page // notion parent page id
+    database // notion database id
 
     constructor() {
-        this.token = process.env.NOTION_API
-        this.pageId = process.env.NOTION_PAGE
-        this.databaseId = process.env.NOTION_DATABASE
+        this.api = process.env.NOTION_API
+        this.page = process.env.NOTION_PAGE
+        this.database = process.env.NOTION_DATABASE
     }
 
-    set databaseId(databaseId) {
-        this.databaseId = databaseId // change later
-        this.setDatabaseId(this.databaseId)
+    set database(database) {
+        this.database = database
+        setEnvValue('NOTION_DATABASE', `'${database}'`)
     }
 
-    get databaseId() {
-        return this.databaseId
+    get database() {
+        return this.database
     }
 
     get pages() {
@@ -44,12 +43,9 @@ class NotionHelper {
         return this.token
     }
 
-    /**
-     * Gets all pages in Database
-     */
     async getNotionPages() {
         const response = await notion.databases.query({
-            database_id: this.databaseId,
+            database_id: this.database,
         })
         const notion_pages = response.results
         .map((page) => page.properties.ID.number)
@@ -57,17 +53,124 @@ class NotionHelper {
         return await notion_pages
     }
 
-    /**
-     * Sets the NOTION_DATABASE /.env variable.
-     * 
-     * @param {string} databaseID
-     */
-    async setDatabaseId(databaseID) {
-        // sets user_id in the environment
-        console.log('Updating NOTION_DATABASE to new value...')
-        setEnvValue('NOTION_DATABASE', `'${databaseID}'`)
-        console.log('Update for NOTION_DATABASE successful!')
+    async createNotionDatabase(courses) {
+        try {
+            const newDatabase = await Notion.databases.create({
+                parent: {
+                    type: "page_id",
+                    page_id: await this.page,
+                },
+                title: [
+                    {
+                        type: "text",
+                        text: {
+                            content: "Canvas Assignments",
+                        },
+                    },
+                ],
+                properties: {
+                    "Assignment Name": {
+                        type: "title",
+                        title: {},
+                    },
+                    "Due Date": {
+                        type: "date",
+                        date: {},
+                    },
+                    "Course": {
+                        select: {
+                            options: await courses,
+                        },
+                    },
+                    "Completion": {
+                        type: "checkbox",
+                        checkbox: {}
+                    },
+                    "URL": {
+                        type: "url",
+                        url: {},
+                    },
+                    "ID": {
+                        type: "number",
+                        number: {
+                            format: "number"
+                        },
+                    },
+                }
+            })
+            console.log(`SUCCESS: Database has been created!`)
+            this.database = newDatabase.id
+        } catch (error) {
+            console.log(`DATABASE ERROR: ${error}`)
+        }
+    }
+
+    async updateNotionDatabase(updatedCourses) {
+        try {
+            const response = await notion.databases.update({
+                database_id: await this.database,
+                properties: {
+                    "Course": {
+                        select: {
+                            options: await updatedCourses,
+                        },
+                    },
+                },
+            })
+            console.log(`SUCCESS: Database has been updated!`)
+            // only add assignments for new courses -> less api calls
+        } catch (error) {
+            console.log(`ERROR: Database could not be update! ${error}`)
+        }
+    }
+
+    async createNotionPage(page_properties) {
+        try {
+            const newPage = await notion.pages.create({
+                parent: {
+                    type: "database_id",
+                    database_id: this.database
+                },
+                properties: page_properties,
+            })
+            console.log(`SUCCESS: new page ${page_properties.ID.number} has been created!`)
+        } catch (error) {
+            console.log(`ERROR: createPage failed!\n${error}`)
+        }
+    }
+
+    async updateNotionPage(page_properties) {
+        try {
+            // get page
+            this.getNotionPageID(page_properties)
+            page_id = 0
+            // update properties
+            const updatePage = await notion.pages.update({
+                page_id: page_id,
+                properties: page_properties,
+            })
+            console.log(`SUCCESS: new page ${page_properties.ID.number} has been updated!`)
+        } catch (error) {
+            console.log(`ERROR: Could not update page ${assignment.ID.number}`)
+        }
+    }
+
+    async getNotionPageID(page_properties) {
+        try {
+            const response = notion.databases.query({
+                database_id: this.database,
+                filter: {
+                    property: "ID",
+                    number: {
+                        equals: page_properties.ID.number
+                    }
+                }
+            })
+            console.log(response)
+        } catch (error) {
+            console.log(`ERROR: Could not locate page!!`)
+        }
     }
 }
 
-module.exports = { NotionHelper }
+module.exports = { NotionHelper}
