@@ -2,7 +2,7 @@
  * Assists with storing User's Canvas information
  * @author Mari Garey
  */
-class CanvasHelp {
+class CanvasHelper {
 
     url // canvas site url
     api // canvas api key
@@ -88,6 +88,39 @@ class CanvasHelp {
         return await courseList
     }
 
+    async getCourseAssignment(courseID, assignmentID) {
+        const url = `${this.url}/api/v1/users/${await this.user}/courses/${courseID}/assignments/${assignmentID}?access_token=${this.api}`
+        const response = await fetch(url)
+        const assignment = await response.json()
+
+        return await ({
+            "Assignment Name": {
+                type: "title",
+                title: [{
+                    type: "text",
+                    text: { content: assignment.name }
+                }]
+            },
+            "Due Date": {
+                type: "date",
+                date: { start: assignment.due_at || '2020-09-10'}
+            },
+            "Course": {
+                select: {
+                    name: courseName
+                }
+            },
+            "ID": {
+                type: "number",
+                number: assignment.id,
+            },
+            "URL" : {
+                type: "url",
+                url: assignment.html_url,
+            }
+        })
+    }
+
     /**
      * Retrieves the assignments from the Canvas API for a specific course.
      * 
@@ -131,11 +164,9 @@ class CanvasHelp {
                 type: "number",
                 number: assignment.id,
             },
-            "Type": {
-                type: "select",
-                select: {
-                    name: assignment.submission_types
-                }
+            "URL" : {
+                type: "url",
+                url: assignment.html_url,
             },
             "children": [
                 {

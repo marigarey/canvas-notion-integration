@@ -54,8 +54,6 @@ docker -t canvas-notion-integration build .
 > - `linux/arm/v6`
 > - `linux/arm/v7`
 > - `linux/arm64`
-> - `linux/ppc64le`
-> - `linux/s390x`
 
 ### 2. Canvas Token Access
 

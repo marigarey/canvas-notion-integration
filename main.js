@@ -91,6 +91,26 @@ async function createNotionDatabase() {
                         format: "number"
                     }
                 },
+                "URL": {
+                    type: "url",
+                    url: {},
+                },
+                /**"children": [
+                {
+                    object: "block",
+                    type: "paragraph",
+                    paragraph: {
+                        rich_text: [{
+                          type: "text",
+                          text: {
+                            content: '',
+                            "link": null
+                          }
+                        }],
+                        "color": "default"
+                    },
+                }
+                ]**/
             },
         })
         console.log(`SUCCESS: Canvas Assignments database has been created!`)
