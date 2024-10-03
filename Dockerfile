@@ -3,7 +3,10 @@
 # Comments are provided throughout this file to help you get started.
 # If you need more help, visit the Dockerfile reference guide at
 # https://docs.docker.com/engine/reference/builder/
-FROM node:alpine3.19
+
+# Do not upgrade node past 18
+# Blocked by https://github.com/docker/build-push-action/issues/1071
+FROM node:18.19.1-alpine
 # Use production node environment by default.
 ENV NODE_ENV production
 
