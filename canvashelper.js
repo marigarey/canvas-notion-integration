@@ -1,16 +1,18 @@
-const dotenv = require("dotenv").config({override: true})
+/**
+ * Assists with storing User's Canvas information
+ * @author Mari Garey
+ */
+class CanvasHelp {
 
-class CanvasHelper { 
-
-    url
-    api
-    user
-    courses
+    url // canvas site url
+    api // canvas api key
+    user // user canvas id
+    courses // list of current courses
 
     constructor() {
         this.url = process.env.CANVAS_API_URL
         this.api = process.env.CANVAS_API
-        this.user = this.defineUser()
+        this.user = this.getUserId()
         this.courses = this.getCourses()
     }
 
@@ -46,53 +48,35 @@ class CanvasHelper {
         return this.courses
     }
 
-    async updateCourses() {
-        this.courses = this.getCourses()
-    }
-
     /**
-     * Gets/Sets the userId variable.
+     * Gets user id from internal CanvasAPI
+     * @returns {number}
      */
-    async defineUser() {
-        // access canvas api
-        const url = `${this.url}/api/v1/courses?access_token=${this.api}`
-        const response = await fetch(url)
+    async getUserId() {
+        // Connect to CanvasAPI
+        const domain = `${this.url}/api/v1/courses?access_token=${this.api}`
+        const response = await fetch(domain)
         const courses = await response.json()
 
-        // use first item that has a defined name (course exists)
+        // Access first availible Course
         const course_option = await courses.filter(course => typeof course.name !== 'undefined')
 
-        // sets user_id in the environment
+        // returns the user id
         return await course_option[0]["enrollments"][0]["user_id"]
     }
 
     /**
-     * TODO figure out if this method is even worth it 💀 
-     */
-    async getCourse(courseID) {
-        const url = `${this.url}/api/v1/courses/${courseID}?access_token=${this.api}`
-        const response = await fetch(url)
-        const course = await response.json()
-
-        return await ({
-            id: course.id.toString(),
-            name: course.name
-        })
-    }
-
-    /**
-     * Retrieves user's Canvas id.
+     * Retrieves the user's courses
      * 
-     * @returns {Promise<Array<{ id: string, name: string}}
+     * @returns {Promise<Array<{id: string, name: string}}
      */
     async getCourses() {
         // Canvas API connection
-        const url = `${this.url}/api/v1/courses?access_token=${this.api}&per_page=100`
-        const response = await fetch(url)
+        const domain = `${this.url}/api/v1/courses?access_token=${this.api}&per_page=100`
+        const response = await fetch(domain)
         const courses = await response.json()
-        console.log(courses)
 
-        // Convert each course for Notion API, only courses that are currently active
+        // Convert each course for API format, only courses that are currently active
         const courseList = await courses
             .filter(course => typeof course.name !== 'undefined' && course.end_at > new Date().toJSON())
             .map(course => ({
@@ -102,35 +86,6 @@ class CanvasHelper {
 
         // list of the active courses
         return await courseList
-    }
-
-    async getCourseAssignment(courseID, assignmentID) {
-        const url = `${this.url}/api/v1/users/${await this.user}/courses/${courseID}/assignments/${assignmentID}?access_token=${this.api}`
-        const response = await fetch(url)
-        const assignment = await response.json()
-
-        return await ({
-            "Assignment Name": {
-                type: "title",
-                title: [{
-                    type: "text",
-                    text: { content: assignment.name }
-                }]
-            },
-            "Due Date": {
-                type: "date",
-                date: { start: assignment.due_at || '2020-09-10'}
-            },
-            "Course": {
-                select: {
-                    name: courseName
-                }
-            },
-            "ID": {
-                type: "number",
-                number: assignment.id,
-            },
-        })
     }
 
     /**
@@ -147,10 +102,11 @@ class CanvasHelper {
         const assignments = await response.json()
         //console.log(await assignments)
 
-        // Convert each assignment for the Notion API, only for assignments that are named
+        // Convert each assignment for the API, only for assignments that are named
         const assignment_list = await assignments
         .filter(assignment => typeof assignment.name !== 'undefined')
-        .map(assignment => ({
+        .map((assignment) =>
+            ({
             "Assignment Name": {
                 type: "title",
                 title: [{
@@ -167,11 +123,21 @@ class CanvasHelper {
                     name: courseName
                 }
             },
+            "URL": {
+                type: "url",
+                url: assignment.html_url
+            },
             "ID": {
                 type: "number",
                 number: assignment.id,
             },
-            /**"children": [
+            "Type": {
+                type: "select",
+                select: {
+                    name: assignment.submission_types
+                }
+            },
+            "children": [
                 {
                     object: "block",
                     type: "paragraph",
@@ -186,7 +152,7 @@ class CanvasHelper {
                         "color": "default"
                     },
                 }
-            ]**/
+            ]
         }))
 
         // list of assignments for the course
@@ -195,3 +161,4 @@ class CanvasHelper {
 }
 
 module.exports = { CanvasHelper }
+

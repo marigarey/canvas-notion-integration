@@ -7,7 +7,7 @@
 
 const { Client, APIErrorCode } = require("@notionhq/client")
 const { CanvasHelper } = require("./canvashelper")
-const { NotionHelper } = require("./notionhelper")
+const { NotionHelper } = require("./old/notionhelper")
 const canvash = new CanvasHelper()
 const notionh = new NotionHelper()
 
@@ -91,22 +91,6 @@ async function createNotionDatabase() {
                         format: "number"
                     }
                 },
-                /**"children": [
-                {
-                    object: "block",
-                    type: "paragraph",
-                    paragraph: {
-                        rich_text: [{
-                          type: "text",
-                          text: {
-                            content: '',
-                            "link": null
-                          }
-                        }],
-                        "color": "default"
-                    },
-                }
-                ]**/
             },
         })
         console.log(`SUCCESS: Canvas Assignments database has been created!`)
