@@ -91,6 +91,10 @@ async function createNotionDatabase() {
                         format: "number"
                     }
                 },
+                "URL": {
+                    type: "url",
+                    url: {},
+                },
                 /**"children": [
                 {
                     object: "block",
