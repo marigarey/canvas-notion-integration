@@ -1,4 +1,4 @@
-const { setEnvValue } = require("./util")
+require('dotenv').config()
 
 /**
  * Assists with storing User's Canvas information
@@ -56,8 +56,9 @@ class CanvasHelper {
      */
     async getUserId() {
         // Connect to CanvasAPI
-        const url = `${this.url}/api/v1/courses?access_token=${this.api}`
-        const response = await fetch(url)
+        const domain = `${this.url}/api/v1/courses?access_token=${this.api}`
+        console.log(domain)
+        const response = await fetch(domain)
         const courses = await response.json()
 
         // Access first availible Course
@@ -99,7 +100,7 @@ class CanvasHelper {
      */
     async getCourseAssignments(courseID, courseName) {
         // Canvas API connection
-        const url = `${this.url}/api/v1/users/${await this.user}/courses/${courseID}/assignments?access_token=${this.api}&per_page=50`
+        const url = `${this.url}/api/v1/users/${await this.user}/courses/${courseID}/assignments?access_token=${this.api}&per_page=100`
         const response = await fetch(url)
         const assignments = await response.json()
         //console.log(await assignments)
@@ -133,26 +134,6 @@ class CanvasHelper {
                 type: "number",
                 number: assignment.id,
             },
-            "URL" : {
-                type: "url",
-                url: assignment.html_url,
-            },
-            "children": [
-                {
-                    object: "block",
-                    type: "paragraph",
-                    paragraph: {
-                        rich_text: [{
-                          type: "text",
-                          text: {
-                            content: assignment.description,
-                            "link": null
-                          }
-                        }],
-                        "color": "default"
-                    },
-                }
-            ]
         }))
 
         // list of assignments for the course
@@ -161,4 +142,3 @@ class CanvasHelper {
 }
 
 module.exports = { CanvasHelper }
-
