@@ -17,8 +17,8 @@ const NotionClient = new Client({ auth: NotionHelp.api})
  * If so, update the database, else create a new database.
  */
 async function checkDatabase() {
+    const courses = await CanvasHelp.getCourses()
     try {
-        const courses = await CanvasHelp.getCourses()
         const response = await NotionClient.databases.query({
             database_id: NotionHelp.database
         })

@@ -26,4 +26,11 @@ function setEnvValue(key, value) {
     fs.writeFileSync("./.env", ENV_VARS.join(os.EOL));
 }
 
+/**
+ * Potential function for future use.
+ */
+const htmlToNotion = () => {
+
+}
+
 module.exports = { setEnvValue }

@@ -110,34 +110,35 @@ class CanvasHelper {
         .filter(assignment => typeof assignment.name !== 'undefined')
         .map((assignment) =>
             ({
-            "Assignment Name": {
-                type: "title",
-                title: [{
-                    type: "text",
-                    text: { content: assignment.name }
-                }]
-            },
-            "Due Date": {
-                type: "date",
-                date: { start: assignment.due_at || '2020-09-10'}
-            },
-            "Course": {
-                select: {
-                    name: courseName
-                }
-            },
-            "URL": {
-                type: "url",
-                url: assignment.html_url
-            },
-            "ID": {
-                type: "number",
-                number: assignment.id,
-            },
-        }))
+                "Assignment Name": {
+                    type: "title",
+                    title: [{
+                        type: "text",
+                        text: { content: assignment.name }
+                    }]
+                },
+                "Due Date": {
+                    type: "date",
+                    date: { start: assignment.due_at || '2020-09-10'}
+                },
+                "Course": {
+                    select: {
+                        name: courseName
+                    }
+                },
+                "URL": {
+                    type: "url",
+                    url: assignment.html_url
+                },
+                "ID": {
+                    type: "number",
+                    number: assignment.id,
+                },
+            }
+        ))
 
         // list of assignments for the course
-        return await assignment_list
+        return await assignment_list 
     }
 }
 

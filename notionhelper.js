@@ -69,7 +69,7 @@ class NotionHelper {
     
             return notion_pages
         } catch(error) {
-            console.log(`ERROR: () did not run: ${error}`)
+            console.log(`ERROR: getNotionPages() did not run: ${error}`)
         }
     }
 
@@ -174,7 +174,6 @@ class NotionHelper {
                 },
             })
             console.log(`SUCCESS: Database has been updated!`)
-            // only add assignments for new courses -> less api calls
         } catch (error) {
             console.log(`ERROR: Database could not be update! ${error}`)
         }
@@ -191,12 +190,11 @@ class NotionHelper {
                     type: "database_id",
                     database_id: this.database
                 },
-                properties: page_properties,
+                properties: await page_properties,
             })
             console.log(`SUCCESS: new page ${page_properties.ID.number} has been created!`)
         } catch (error) {
-            console.log(page_properties)
-            console.log(`ERROR: createPage failed!\n${error}`)
+            console.log(`ERROR: createNotionPage failed!\n${error}`)
         }
     }
 
