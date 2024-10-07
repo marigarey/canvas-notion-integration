@@ -123,7 +123,7 @@ docker run --env-file ./.env canvas-notion-integration
 ```
 
 > [!NOTE]
-> If you did not choose to build the image yourself, you can replace `canvas-notion-integration` with `ghcr.io/marigarey/canvas-notion-integration:latest`
+> If you did not choose to build the image yourself, you can replace `canvas-notion-integration` with `ghcr.io/marigarey/canvas-notion-integration:main`
 
 ## Other Information
 
