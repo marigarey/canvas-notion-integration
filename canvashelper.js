@@ -140,6 +140,50 @@ class CanvasHelper {
         // list of assignments for the course
         return await assignment_list 
     }
+
+    async getCourseDiscussions(courseID, courseName) {
+        const url = `${this.url}/api/v1/courses/${courseID}/discussion_topics?access_token=${this.api}`
+        const response = await fetch(url)
+        const discussion_topics = await response.json()
+
+        // Convert each discussion for the API, only for assignments that are named
+        const discussion_list = await discussion_topics
+        .filter(discussion => typeof discussion.title !== 'undefined')
+        .map((discussion) =>
+            ({
+                "Assignment Name": {
+                    type: "title",
+                    title: [{
+                        type: "text",
+                        text: { content: discussion.title }
+                    }]
+                },
+                "Due Date": {
+                    type: "date",
+                    date: { 
+                        start: discussion.delayed_post_at || '2020-09-10',
+                        end: discussion.lock_at,
+                    }
+                },
+                "Course": {
+                    select: {
+                        name: courseName
+                    }
+                },
+                "URL": {
+                    type: "url",
+                    url: discussion.html_url
+                },
+                "ID": {
+                    type: "number",
+                    number: discussion.id,
+                },
+            }
+        ))
+
+        // list of dicussion for the course
+        return await discussion_list
+    }
 }
 
 module.exports = { CanvasHelper }

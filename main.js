@@ -61,12 +61,14 @@ async function getCoursesPages() {
     try {
         const courses = await CanvasHelp.courses
         for (let i = 0; i < courses.length; i++) {
-            const pages = await CanvasHelp.getCourseAssignments(courses[i].id, courses[i].name)
+            const assignments = await CanvasHelp.getCourseAssignments(courses[i].id, courses[i].name)
+            const pages = assignments.concat(await CanvasHelp.getCourseDiscussions(courses[i].id, courses[i].name))
             const course_pages = await NotionHelp.getNotionPagesByCourse(courses[i])
             for (let page of pages) {
                 await checkPage(page, course_pages)
             }
         }
+        console.log(`SUCCESS: all pages are updated or created!`)
     } catch(error) {
         console.log(`ERROR: getCoursesPages() did not run: ${error}`)
     }
