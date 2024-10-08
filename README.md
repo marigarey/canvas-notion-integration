@@ -5,11 +5,6 @@ View your Canvas assignments in Notion created by Mari Garey!
 
 ## Introduction
 
-> [!IMPORTANT]
-> There will be an overhaul on this repo to make it more manageable!
-> I will be looking into adding additional features as well, so if
-> you have any ideas, let me know!
-
 Using this repository you will be able to export all of your assignments from Canvas to a Notion Database!
 Following the instructions below will help you set up the database!
 
@@ -90,7 +85,7 @@ Scroll down to `+ Add Connections`. Find and select the integration. Make sure t
 <img src="/img/NotionPermissions.gif" width="500">
 
 ### 5. Environment Variable `.env` file Setup
-Create a `.env` file and replace all the <> with your own information.
+Create a `.env` file and replace all the <> with your own information. Place the `.env` file in the `src` folder.
 *Keep the `NOTION_DATABASE` variable as is because it will be overwritten when you run the code*
 > [!NOTE]
 > How to Access the Key for the `NOTION_PAGE`:
@@ -114,6 +109,7 @@ NOTION_DATABASE='invalid' # filled by integration
 
 #### Without Docker
 ```zsh
+cd src
 node main.js
 ```
 
