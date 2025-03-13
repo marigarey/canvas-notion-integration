@@ -1,14 +1,17 @@
 {
   "dependencies": {
     "@notionhq/client": "^2.2.15",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "html-to-notion": "^0.2.1"
   },
-    "name": "nodemon",
-    "homepage": "http://nodemon.io",
-    "...": "... other standard package.json values",
-    "nodemonConfig": {
-      "ignore": ["**/img/**"],
-      "delay": 2500
+  "name": "nodemon",
+  "homepage": "http://nodemon.io",
+  "...": "... other standard package.json values",
+  "nodemonConfig": {
+    "ignore": [
+      "**/img/**"
+    ],
+    "delay": 2500
   },
-  "license":"MIT"
+  "license": "MIT"
 }

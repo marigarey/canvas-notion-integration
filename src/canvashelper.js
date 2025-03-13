@@ -94,7 +94,7 @@ class CanvasHelper {
     /**
      * Retrieves the assignments from the Canvas API for a specific course.
      * 
-     * @param {number} courseID 
+     * @param {string} courseID 
      * @param {string} courseName 
      * @returns {Promise<Array<{ name: string, date: string, course: string, ID: string }>>}
      */
@@ -141,6 +141,13 @@ class CanvasHelper {
         return await assignment_list 
     }
 
+    /**
+     * Retrieves the discussions from the Canvas API for a specific course.
+     * 
+     * @param {string} courseID 
+     * @param {string} courseName 
+     * @returns {Promise<Array<{ name: string, date: string, course: string, ID: string }>>}
+     */
     async getCourseDiscussions(courseID, courseName) {
         const url = `${this.url}/api/v1/courses/${courseID}/discussion_topics?access_token=${this.api}`
         const response = await fetch(url)
