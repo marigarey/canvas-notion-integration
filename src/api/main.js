@@ -4,10 +4,11 @@
  * => add description of assignments into each page
  */
 
-require('dotenv').config()
-const { Client } = require("@notionhq/client")
-const { CanvasHelper } = require("./canvashelper")
-const { NotionHelper } = require("./notionhelper")
+import dotenv from "@dotenv"
+dotenv.config()
+import { Client } from "@notionhq/client"
+import { CanvasHelper } from "./canvashelper"
+import { NotionHelper } from "./notionhelper"
 const CanvasHelp = new CanvasHelper()
 const NotionHelp = new NotionHelper()
 const NotionClient = new Client({ auth: NotionHelp.api})
@@ -19,7 +20,7 @@ const NotionClient = new Client({ auth: NotionHelp.api})
 async function checkDatabase() {
     const courses = await CanvasHelp.getCourses()
     try {
-        const response = await NotionClient.databases.query({
+        await NotionClient.databases.query({
             database_id: NotionHelp.database
         })
         console.log('FOUND: Database exists! Retrieving database data...')
@@ -28,6 +29,7 @@ async function checkDatabase() {
         }
         
     } catch (error) {
+        if (typeof(error))
             console.log('NOT FOUND: Database does not exist! Creating new database...')
             await NotionHelp.createNotionDatabase(courses)
     }

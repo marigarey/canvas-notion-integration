@@ -1,15 +1,16 @@
-require('dotenv').config()
+import dotenv from "@dotenv"
+dotenv.config()
 
-const { Client } = require("@notionhq/client")
+import { Client } from "@notionhq/client"
 const Notion = new Client({ auth: process.env.NOTION_API})
-const { setEnvValue } = require("./util")
+import { setEnvValue } from "./util"
 
 /**
  * Class to help create/update the database in Notion,
  * as well as the pages in Notion database
  * @author Mari Garey
  */
-class NotionHelper {
+export default class NotionHelper {
 
     api // notion api key
     page // notion parent page id
@@ -163,7 +164,7 @@ class NotionHelper {
      */
     async updateNotionDatabase(updatedCourses) {
         try {
-            const response = await Notion.databases.update({
+            await Notion.databases.update({
                 database_id: this.database,
                 properties: {
                     "Course": {
@@ -185,7 +186,7 @@ class NotionHelper {
      */
     async createNotionPage(page_properties) {
         try {
-            const newPage = await Notion.pages.create({
+            await Notion.pages.create({
                 parent: {
                     type: "database_id",
                     database_id: this.database
@@ -205,13 +206,13 @@ class NotionHelper {
     async updateNotionPage(page_properties) {
         try {
             // update properties
-            const updatePage = await Notion.pages.update({
+            await Notion.pages.update({
                 page_id: await this.getNotionPageID(page_properties),
                 properties: page_properties,
             })
             console.log(`SUCCESS: new page ${page_properties.ID.number} has been updated!`)
         } catch (error) {
-            console.log(`ERROR: Could not update page ${page_properties.ID.number}`)
+            console.log(`ERROR: Could not update page ${page_properties.ID.number}, ${error}`)
         }
     }
 
@@ -233,9 +234,9 @@ class NotionHelper {
             })
             return (await response).results[0].id
         } catch (error) {
-            console.log(`ERROR: Could not locate page!!`)
+            console.log(`ERROR: Could not locate page!! ${error}`)
         }
     }
 }
 
-module.exports = { NotionHelper}
+//export default { NotionHelper}

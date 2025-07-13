@@ -1,5 +1,5 @@
-const fs = require("fs")
-const os = require("os")
+import fs from "@fs"
+import os from "@os"
 
 /**
  * Creates or updates /.env values.
@@ -24,13 +24,6 @@ function setEnvValue(key, value) {
 
     // write everything back to the file system
     fs.writeFileSync("./.env", ENV_VARS.join(os.EOL));
-}
-
-/**
- * Potential function for future use.
- */
-const htmlToNotion = () => {
-
 }
 
 module.exports = { setEnvValue }
