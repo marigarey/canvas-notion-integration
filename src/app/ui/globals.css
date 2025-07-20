@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+.radix-themes {
+	--default-font-family: var(--font-inter);
+  --font-weight-light: 300;
+	--font-weight-regular: 400;
+	--font-weight-medium: 500;
+	--font-weight-bold: 700;
+
+  --my-brand-color: #8ac460;
+  --green-1: #fbfdfa;
+  --green-2: #f6fbf4;
+  --green-3: #e6f9da;
+  --green-4: #d6f4c3;
+  --green-5: #c5ebad;
+  --green-6: #b3de97;
+  --green-7: #9dcd7d;
+  --green-8: #7fb955;
+  --green-9: var(--my-brand-color);
+  --green-10: #7fb955;
+  --green-11: #517e2e;
+  --green-12: #2e421f;
+
+  --green-a1: #33990005;
+  --green-a2: #2fa3000b;
+  --green-a3: #53d60025;
+  --green-a4: #51d1003c;
+  --green-a5: #4bc10052;
+  --green-a6: #45af0068;
+  --green-a7: #3f9d0082;
+  --green-a8: #3f9600aa;
+  --green-a9: var(--my-brand-color);
+  --green-a10: #3f9600aa;
+  --green-a11: #2b6200d1;
+  --green-a12: #112800e0;
+
+  --green-contrast: #fff;
+  --green-surface: #f4faf1cc;
+  --green-indicator: #8ac460;
+  --green-track: #8ac460;
+}

@@ -1,103 +1,67 @@
+import { Heading, Container, Box, Flex, Text, Button, Inset, Link } from "@radix-ui/themes";
+import "./ui/globals.css";
 import Image from "next/image";
+import Icon from "@/app/public/CoverPage.svg"
+import Block from "@/app/public/block1.svg"
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div>
+      < Container size="3" pt="9" pb="9">
+        <Flex direction={"row"} gap="4" align={"center"}>
+          <Flex direction={"column"} gap="8">
+            <Box>
+              <Heading size="8"><em>Sprigate:</em> The Canvas to Notion Integration.</Heading>
+              <Box pt="2">
+                <Text style={{color:"var(--green-11)"}}>Never worry about missing your assignment ever again.</Text>
+              </Box>
+            </Box>
+            <Flex direction={"row"} gap="3">
+              <Button size="3">Get Started</Button>
+              <Link href="/learnmore">
+                <Button variant="soft" size="3">Learn More</Button>
+              </Link>
+            </Flex>
+          </Flex>
+          <Box>
+             <Image
+                src={Icon}
+                alt="Sprigate Logo"
+                width={500}
+              />
+          </Box>
+        </Flex>
+      </Container>
+      <Container size="3" pt="9" pb="9">
+        <Flex direction={"row"} gap="8" justify={"center"}>
+          <Box className="rounded-md" maxWidth={"400px"}
+            style={{outline: "var(--green-a6) solid 4px", outlineOffset: "-1px", opacity: "100", backgroundColor:"var(--green-2)"}}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            <Box pt="4" px="4">
+              <Heading>See All Your Assignments Within One Database</Heading>
+            </Box>
+            <Box pt="2" px="4" pb="6">
+              <Text style={{color:"var(--green-12)"}}>Sprigate organizes your quizzes, assignments, and discussions with a click of a button.</Text>
+            </Box>
+            <Inset clip="padding-box" side="bottom">
+              <Image 
+                alt="block 1"
+                src={Block}
+              />
+            </Inset>
+          </Box>
+          <Box className="rounded-md" maxWidth={"400px"}
+            style={{outline: "var(--green-a6) solid 4px", outlineOffset: "-1px", opacity: "100", backgroundColor:"var(--green-2)"}}
           >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+            <Box pt="4" px="4">
+              <Heading>Reoccurring Queries to Keep All Assignments Up to Date</Heading>
+            </Box>
+            <Box py="2" px="4">
+              <Text style={{color:"var(--green-12)"}}>Assignments change and are added over the semester. With Sprigage, you can set up a time period to refresh the queries.</Text>
+            </Box>
+          </Box>
+        </Flex>
+      </Container>
     </div>
   );
 }
