@@ -24,6 +24,16 @@ export default function Home() {
           </Box>
         </Box>
         <Box pb="4">
+          <Heading size="5" style={{color:"var(--green-12)"}}>What makes Sprigate different?</Heading>
+          <Box pt="4">
+            <Text>
+              Instead of a one time information collection, Sprigate allows for scheduled refreshes! 
+              Some courses change due dates, update information, or roll out assignments as the course goes on. 
+              You can customize what courses will be refreshed on your own time, or keep it all manual-- you choose!
+            </Text>
+          </Box>
+        </Box>
+        <Box pb="9">
           <Heading size="5" style={{color:"var(--green-12)"}}>How should I use Sprigate?</Heading>
           <Box pt="4">
             <Text>

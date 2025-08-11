@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { inter } from '@/app/ui/fonts';
+import { inter } from '@/app/ui/style/fonts';
 import "@radix-ui/themes/styles.css";
 import { Theme } from "@radix-ui/themes";
 import "./ui/globals.css";
@@ -23,7 +23,7 @@ export default function RootLayout({
       >
         <Theme accentColor="green">
           <Header />
-        {children}
+          {children}
           <Footer />
         </Theme>
       </body>

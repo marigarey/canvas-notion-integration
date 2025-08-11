@@ -4,7 +4,7 @@ import "@/app/ui/globals.css";
 export default function Home() {
   return (
     <div>
-      < Container size="1">
+      < Container size="1" minHeight={"35em"}>
         <Box py="9" px="2">
           <Heading>About</Heading>
           <Box pt="4" pb="4">

@@ -4,21 +4,21 @@ import Logo from "@/app/public/sprigate.svg"
 
 export default function Header() {
   return (
-    <Box style={{ backgroundColor: "var(--green-a2)"}} position={"sticky"}>
+    <Box style={{ backgroundColor: "var(--green-2)"}} position={"sticky"} top="0">
       <Section py="4" px="2">
-        <Flex direction={"row"} gap="9" align={"center"}>
+        <Flex direction={"row"} gap="5" align={"center"}>
           <Box position={"relative"} left="2">
             <Link href="/">
               <Image 
                 width={40}
                 height={40}
                 src={Logo}
-                alt="Sprigate Logo"
+                alt="Sprigate"
               />
             </Link>
           </Box>
           <Box position={"relative"}>
-            <Flex direction={"row"} gap="9" justify={"between"}>
+            <Flex direction={"row"} gap="5">
               <Box>
                 <Link href="/about">About</Link>
               </Box>

@@ -1,13 +1,13 @@
 import { Heading, Container, Box, Flex, Text, Button, Inset, Link } from "@radix-ui/themes";
 import "./ui/globals.css";
 import Image from "next/image";
-import Icon from "@/app/public/CoverPage.svg"
-import Block from "@/app/public/block1.svg"
+import Icon from "@/app/public/canvasnotioncover.svg"
+import NotionExample from "@/app/public/notionexample.svg"
 
 export default function Home() {
   return (
     <div>
-      < Container size="3" pt="9" pb="9">
+      < Container size="3" pt="9" pb="9" flexGrow={"1"}>
         <Flex direction={"row"} gap="4" align={"center"}>
           <Flex direction={"column"} gap="8">
             <Box>
@@ -45,8 +45,8 @@ export default function Home() {
             </Box>
             <Inset clip="padding-box" side="bottom">
               <Image 
-                alt="block 1"
-                src={Block}
+                alt="Notion Example"
+                src={NotionExample}
               />
             </Inset>
           </Box>
