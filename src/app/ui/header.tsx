@@ -31,12 +31,12 @@ export default function Header() {
             </Flex>
           </Box>
           <Flex gap="5" position={"absolute"} right="4">
-            <Button variant="soft">
-              Login
-            </Button>
-            <Button>
-              Get Started
-            </Button>
+            <Link href="/login" underline="none">
+              <Button variant="soft">Login</Button>
+            </Link>
+            <Link href="/signup" underline="none">
+              <Button>Get Started</Button>
+            </Link>
           </Flex>
         </Flex>
       </Section>

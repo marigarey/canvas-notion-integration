@@ -1,23 +1,21 @@
 'use server'
 
-//import { redirect } from 'next/navigation'
+import { redirect } from 'next/navigation'
 
-export default async function SendMessage(formData: FormData) {
+export default async function sendMessage(formData: FormData) {
   'use server'
-
-  const req = {
+  const validatedReq = {
     email: formData.get('email'),
     subject: formData.get('subject'),
     message: formData.get('message')
   }
-  console.log(req)
   try {
     const res = await fetch('url', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(req)
+      body: JSON.stringify(validatedReq)
     })
 
     if (!res.ok) {
@@ -26,5 +24,5 @@ export default async function SendMessage(formData: FormData) {
   } catch (error) {
     console.log(error)
   }
-  //redirect(`/contact/send`)
+  redirect(`/contact/send`)
 }

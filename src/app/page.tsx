@@ -17,7 +17,9 @@ export default function Home() {
               </Box>
             </Box>
             <Flex direction={"row"} gap="3">
-              <Button size="3">Get Started</Button>
+              <Link href="/signup" underline="none">
+                <Button size="3">Get Started</Button>
+              </Link>
               <Link href="/learnmore">
                 <Button variant="soft" size="3">Learn More</Button>
               </Link>
@@ -57,7 +59,7 @@ export default function Home() {
               <Heading>Reoccurring Queries to Keep All Assignments Up to Date</Heading>
             </Box>
             <Box py="2" px="4">
-              <Text style={{color:"var(--green-12)"}}>Assignments change and are added over the semester. With Sprigage, you can set up a time period to refresh the queries.</Text>
+              <Text style={{color:"var(--green-12)"}}>Assignments change and are added over the semester. With Sprigate, you can set up a time period to refresh the queries.</Text>
             </Box>
           </Box>
         </Flex>
