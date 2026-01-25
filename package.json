@@ -1,13 +1,7 @@
 {
   "dependencies": {
-<<<<<<< HEAD
-    "@notionhq/client": "^2.2.15",
-    "dotenv": "^16.4.5",
-    "html-to-notion": "^0.2.1"
-=======
     "@notionhq/client": "^2.2.17",
     "dotenv": "^16.4.7"
->>>>>>> 6652d04b4df2a983a45f5c01ddf8b03b06b6ded1
   },
   "name": "nodemon",
   "homepage": "http://nodemon.io",
