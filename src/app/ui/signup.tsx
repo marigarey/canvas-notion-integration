@@ -1,16 +1,14 @@
-import Form from 'next/form'
-import createUser from '../(user)/signup/actions'
-import { Flex, Button} from "@radix-ui/themes";
+import { Button, Flex } from "@radix-ui/themes";
+import { signInWithNotion } from "@/app/(user)/auth/actions";
 
-export default function SignupForm() {
-  // add security to password stuff
+export default function NotionAuthForm() {
   return (
-    <Form action={createUser}>
+    <form action={signInWithNotion}>
       <Flex direction="column" gap="4" pt="4">
         <Button type="submit">
           Sign in with Notion
         </Button>
       </Flex>
-    </Form>
-  )
+    </form>
+  );
 }
