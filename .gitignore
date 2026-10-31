@@ -1,6 +1,24 @@
-# dotenv environment variables files
+# Dependencies
+/node_modules/
+
+# Local credentials and generated state
 .env
-.env.test
-/node_modules
-test.js
-/old
+.env.*
+!.env.example
+.canvas-notion-state.json
+.canvas-notion-state.json.tmp
+
+# Test and tool output
+/coverage/
+/.next/
+/out/
+/build/
+npm-debug.log*
+*.tsbuildinfo
+next-env.d.ts
+
+# Editors and operating systems
+.DS_Store
+.idea/
+.vscode/
+/old/
