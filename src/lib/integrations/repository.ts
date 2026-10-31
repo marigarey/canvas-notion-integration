@@ -52,3 +52,9 @@ export async function updateSyncState(
     throw new Error(`Unable to update sync status: ${error.message}`);
   }
 }
+
+export async function deleteIntegration(userId: string) {
+  const supabase = await createClient();
+  const { error } = await supabase.from("user_integrations").delete().eq("user_id", userId);
+  if (error) throw new Error(`Unable to disconnect integrations: ${error.message}`);
+}

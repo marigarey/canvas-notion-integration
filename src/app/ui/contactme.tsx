@@ -5,11 +5,15 @@ import sendMessage from "@/app/(website)/contact/actions";
 import Form from 'next/form'
 
 
-export default function ContactForm() {
+export default function ContactForm({ error }: { error?: string }) {
   return (
-    // PLACE HOLDER WHERE THE ERROR WILL POPUP
     <Form action={sendMessage}>
       <Flex direction="column" gap="4" pt="4">
+        {error ? <p role="alert" style={{ color: "var(--red-11)" }}>{error}</p> : null}
+        <label style={{ display: "none" }} aria-hidden="true">
+          Website
+          <input name="website" tabIndex={-1} autoComplete="off" />
+        </label>
         <Box>
           <Heading size="4">Email:</Heading>
           <Box pt="2">

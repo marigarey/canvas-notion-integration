@@ -5,9 +5,13 @@ import { z } from "zod";
 import { requireUser } from "@/lib/auth/require-user";
 import { CanvasApiError, CanvasClient } from "@/lib/canvas/client";
 import { decryptCredential, encryptCredential } from "@/lib/security/credentials";
-import { getIntegration, updateSyncState, upsertIntegration } from "@/lib/integrations/repository";
+import { deleteIntegration, getIntegration, updateSyncState, upsertIntegration } from "@/lib/integrations/repository";
+import { getNextSyncAt } from "@/lib/integrations/schedule";
+import type { SyncFrequency } from "@/lib/integrations/types";
 import { parseNotionPageId } from "@/lib/notion/page-id";
-import { NotionSyncClient } from "@/lib/notion/sync";
+import { executeSync } from "@/lib/sync/execute";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { createClient } from "@/lib/supabase/server";
 
 const connectionSchema = z.object({
   canvasUrl: z.string().trim().min(1),
@@ -86,6 +90,35 @@ export async function saveCourseSelection(formData: FormData) {
   redirect("/dashboard/setup?saved=courses");
 }
 
+export async function saveSchedule(formData: FormData) {
+  const user = await requireUser();
+  const parsed = z.enum(["manual", "daily", "weekly", "monthly"]).safeParse(
+    formData.get("frequency"),
+  );
+  if (!parsed.success) {
+    errorRedirect("/dashboard/setup", "Choose a valid synchronization schedule.");
+  }
+
+  const frequency = parsed.data as SyncFrequency;
+  if (frequency !== "manual") {
+    const integration = await getIntegration(user.id);
+    if (
+      !integration?.canvas_token_ciphertext ||
+      !integration.notion_access_token_ciphertext ||
+      !integration.notion_page_id ||
+      !integration.selected_course_ids.length
+    ) {
+      errorRedirect("/dashboard/setup", "Complete both connections and select a course before enabling automatic sync.");
+    }
+  }
+
+  await upsertIntegration(user.id, {
+    sync_frequency: frequency,
+    next_sync_at: getNextSyncAt(frequency),
+  });
+  redirect("/dashboard/setup?saved=schedule");
+}
+
 export async function runManualSync() {
   const user = await requireUser();
   const integration = await getIntegration(user.id);
@@ -109,30 +142,14 @@ export async function runManualSync() {
   await updateSyncState(user.id, "running", "Synchronization is running.");
 
   try {
-    const canvas = new CanvasClient(
-      integration.canvas_base_url,
-      decryptCredential(integration.canvas_token_ciphertext),
-    );
-    const notion = new NotionSyncClient(
-      decryptCredential(integration.notion_access_token_ciphertext),
-    );
-    const courses = (await canvas.getCourses()).filter((course) =>
-      integration.selected_course_ids.includes(course.id),
-    );
-    const itemGroups = await Promise.all(courses.map((course) => canvas.getSyncItems(course)));
-    const items = itemGroups.flat();
-    const destination = await notion.ensureDestination(
-      integration.notion_page_id,
-      integration.notion_database_id,
-      integration.notion_data_source_id,
-    );
+    const { destination, result } = await executeSync(integration);
 
     await upsertIntegration(user.id, {
       notion_database_id: destination.databaseId,
       notion_data_source_id: destination.dataSourceId,
+      next_sync_at: getNextSyncAt(integration.sync_frequency),
     });
 
-    const result = await notion.sync(destination.dataSourceId, items);
     const message = `Created ${result.created}, updated ${result.updated}, failed ${result.failed}.`;
     await updateSyncState(user.id, result.failed ? "failed" : "succeeded", message, new Date().toISOString());
   } catch (error) {
@@ -142,4 +159,31 @@ export async function runManualSync() {
   }
 
   redirect("/dashboard?synced=true");
+}
+
+export async function disconnectIntegrations(formData: FormData) {
+  const user = await requireUser();
+  if (formData.get("confirmation") !== "DISCONNECT") {
+    errorRedirect("/dashboard/account", "Type DISCONNECT to remove the saved connections.");
+  }
+
+  await deleteIntegration(user.id);
+  redirect("/dashboard/account?disconnected=true");
+}
+
+export async function deleteAccount(formData: FormData) {
+  const user = await requireUser();
+  if (formData.get("confirmation") !== "DELETE") {
+    errorRedirect("/dashboard/account", "Type DELETE to permanently remove the account.");
+  }
+
+  const admin = createAdminClient();
+  const { error } = await admin.auth.admin.deleteUser(user.id);
+  if (error) {
+    errorRedirect("/dashboard/account", "The account could not be deleted.");
+  }
+
+  const supabase = await createClient();
+  await supabase.auth.signOut();
+  redirect("/?accountDeleted=true");
 }

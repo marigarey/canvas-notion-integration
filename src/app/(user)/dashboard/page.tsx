@@ -74,6 +74,12 @@ export default async function Dashboard({ searchParams }: DashboardProps) {
           <Text as="p" mt="2">
             {integration?.last_sync_message ?? "No synchronization has run yet."}
           </Text>
+          <Text as="p" mt="1" color="gray">
+            Schedule: {integration?.sync_frequency ?? "manual"}
+            {integration?.next_sync_at
+              ? ` · Next due ${new Date(integration.next_sync_at).toLocaleString()}`
+              : ""}
+          </Text>
           {integration?.last_synced_at ? (
             <Text as="p" mt="1" color="gray">
               Last completed {new Date(integration.last_synced_at).toLocaleString()}.
@@ -87,9 +93,10 @@ export default async function Dashboard({ searchParams }: DashboardProps) {
         </Box>
 
         <form action={signOut}>
-          <Button type="submit" variant="soft">
-            Sign out
-          </Button>
+          <Flex gap="3" align="center">
+            <Button type="submit" variant="soft">Sign out</Button>
+            <Link href="/dashboard/account">Account and data</Link>
+          </Flex>
         </form>
       </Flex>
     </Container>

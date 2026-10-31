@@ -2,7 +2,12 @@ import { Heading, Container, Box} from "@radix-ui/themes";
 import "@/app/ui/globals.css";
 import ContactForm from "@/app/ui/contactme";
 
-export default function Home() {
+type ContactPageProps = {
+  searchParams: Promise<{ error?: string }>;
+};
+
+export default async function Contact({ searchParams }: ContactPageProps) {
+  const { error } = await searchParams;
   return (
     <div>
       <Container size="1" py="9" px="2" minHeight={"35em"}>
@@ -16,7 +21,7 @@ export default function Home() {
               I will try to respond as soon as I can!
             </Heading>
           </Box>
-          <ContactForm />
+          <ContactForm error={error} />
         </Box>
       </Container>
     </div>

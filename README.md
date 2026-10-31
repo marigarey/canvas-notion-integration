@@ -1,140 +1,152 @@
-# Canvas to Notion Integration
-View your Canvas assignments in Notion created by Mari Garey!
+# Sprigate
 
-<img src="./img/canvasNotionIntegration.png" width="500"/>
+Sprigate synchronizes a student's active Canvas courses, assignments, quizzes, and discussions into a Notion database.
 
-## Introduction
+The current application is a Next.js web service with:
 
-Using this repository you will be able to export all of your assignments from Canvas to a Notion Database!
-Following the instructions below will help you set up the database!
+- Notion OAuth through Supabase Auth
+- Encrypted per-user Canvas and Notion credentials
+- Course selection and manual synchronization
+- Optional daily, weekly, or monthly synchronization
+- A Notion database that preserves the user's `Completed` checkbox while Sprigate updates Canvas-owned fields
+- Row-level security for all user integration settings
 
-### Support the Creator!
+The older local synchronization prototype remains under `src/internal` for historical reference. It is not the web application's entry point.
 
-* Give a ⭐️ to the repository <sub>please and thank you 🤗</sub>
-* Submit a PR for feedback or in the Discussion Tab
-* Watch the demo on YT and give it a 👍 
+## Architecture
 
+```text
+Browser
+  -> Next.js server actions and route handlers
+  -> Supabase Auth + Postgres (RLS)
+  -> Canvas REST API
+  -> Notion API
 
-## Using the Canvas to Notion Integration
-
-### Video Tutorial
-
-*Coming Soon*
-
-### 1. Project Setup
-
-```zsh
-# Clone this repository to your computer
-git clone https://github.com/marigarey/canvas-notion-integration.git
-
-# Open this project
-cd canvas-notion-integration
+Vercel Cron (or another scheduler)
+  -> GET /api/cron/sync
+  -> due user integrations
+  -> Canvas-to-Notion synchronization
 ```
 
-#### Without Docker
-```zsh
-# Install dependencies
+Canvas and Notion credentials are encrypted with AES-256-GCM before being stored. API credentials and decryption keys are only used in server-side modules.
+
+## Requirements
+
+- Node.js 22
+- A Supabase project
+- A Notion OAuth integration configured in Supabase Auth
+- A deployment capable of invoking the protected cron endpoint for automatic synchronization
+
+## Local setup
+
+Install dependencies:
+
+```bash
 npm install
 ```
 
-#### With Docker
-```zsh
-# Build image
-docker -t canvas-notion-integration build .
+Create the local environment file:
+
+```bash
+cp .env.example .env.local
 ```
 
-> [!NOTE]
-> This step is not required on most architectures. GHCR should have built the latest version on the following architectures:
-> - `linux/amd64`
-> - `linux/arm/v6`
-> - `linux/arm/v7`
-> - `linux/arm64`
+Generate independent encryption and cron secrets:
 
-### 2. Canvas Token Access
-
-Go to your Canvas Profile Settings and scroll down to `Approved Integrations`.
-<img src="img/CanvasIntegrationNAT.png">
-    Click on `+ New Access Token` to create the token.
-
-<img src="img/CanvasIntegrationToken.png" width="400">
-    Name your Token, and leave the date blank to have no expiration date.
-
-<img src="img/CanvasIntegrationDetails.png" width="400">
-    Once the Token is generated, copy the Token string.
-
-This string will be your **Canvas API Key**
-
-> [!WARNING]
-> Once you move away from that screen you will not be able to access the token string!
-> Make sure to save the Token string now!
-
-### 3. Notion API Key Access[^1]
-
-Pull up the [Notion - My Integrations](https://www.notion.so/my-integrations) site and click `+ New Integration`
-
-Enter the name of the integration (ie Canvas Notion Integration) and what workspace the Integration will apply to.
-In the `Secrets` tab and copy the _Internal Integration Secret_ this will be your **Notion API Key**.
-
-<img src="/img/NotionIntegration.gif" width="500">
-
-### 4. Create Integration within Notion
-
-Head to whatever Notion Page you want to put the database in and click on `...` in the top right.
-Scroll down to `+ Add Connections`. Find and select the integration. Make sure to click confirm.
-
-<img src="/img/NotionPermissions.gif" width="500">
-
-### 5. Environment Variable `.env` file Setup
-Create a `.env` file and replace all the <> with your own information. Place the `.env` file in the `src` folder.
-*Keep the `NOTION_DATABASE` variable as is because it will be overwritten when you run the code*
-> [!NOTE]
-> How to Access the Key for the `NOTION_PAGE`:
-> 1. On the desired Notion page, click `Share` then `🔗 Copy link`
-> 2. Paste the link down, example url: notion.so/{name}/{page}-**0123456789abcdefghijklmnopqrstuv**?{otherstuff}
-> 3. Copy the string of 32 letter and number combination to the `.env` file
-
-```
-CANVAS_API_URL=<example: https://canvas-page.edu>
-CANVAS_API=<your canvas api token>
-NOTION_PAGE=<page id of the parent page to create the database>
-NOTION_API=<your notion api key> # filled by user
-NOTION_DATABASE='invalid' # filled by integration
+```bash
+openssl rand -base64 32
+openssl rand -hex 32
 ```
 
-### 6. Run Code
+Set these variables in `.env.local`:
 
-> [!IMPORTANT]
-> To update your database you will have to run the script every time there is a change in Canvas
-> It is recomended to rerun the code every semester or class/assignment changes
+| Variable | Purpose |
+| --- | --- |
+| `NEXT_PUBLIC_SITE_URL` | Application origin, such as `http://localhost:3000` |
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase public/anonymous key |
+| `SUPABASE_SERVICE_ROLE_KEY` | Server-only key for cron, contact messages, and account deletion |
+| `CREDENTIAL_ENCRYPTION_KEY` | Base64-encoded 32-byte AES key |
+| `CRON_SECRET` | Bearer token protecting `/api/cron/sync` |
+| `NEXT_SERVER_ACTIONS_ENCRYPTION_KEY` | Stable 32-byte key shared by all application instances |
 
-#### Without Docker
-```zsh
-cd src
-node main.js
+Never expose the service-role key, encryption key, or cron secret through a `NEXT_PUBLIC_` variable.
+
+Apply the SQL migrations in `supabase/migrations` with the Supabase CLI or SQL editor. The migrations create:
+
+- `user_integrations`, protected by per-user row-level security
+- scheduling fields and a due-sync index
+- `contact_messages`, accessible only through the server-side service role
+
+Start the application:
+
+```bash
+npm run dev
 ```
 
-#### With Docker
-```zsh
-docker run --env-file ./.env canvas-notion-integration
+## Supabase and Notion OAuth
+
+Configure Notion as an OAuth provider in Supabase Auth. The Notion integration's OAuth redirect URI should point to Supabase's provider callback:
+
+```text
+https://<project-ref>.supabase.co/auth/v1/callback
 ```
 
-> [!NOTE]
-> If you did not choose to build the image yourself, you can replace `canvas-notion-integration` with `ghcr.io/marigarey/canvas-notion-integration:main`
+Add the application's callbacks to the Supabase redirect allow list:
 
-## Other Information
+```text
+http://localhost:3000/auth/callback
+https://your-production-domain.example/auth/callback
+```
 
-In the future I do plan to add more to this, possibly blocks outside of the database.
-If you have any suggestions on what I should, please let me know! I want to hear your feedback and improve!
+After login, Sprigate encrypts and stores the Notion provider token. Users then provide a Canvas school URL, a Canvas access token, and a Notion parent page that the integration can access.
 
-> [!NOTE]
-> The ID Property is for internal use and you can hide it in your database
-> Hiding a Property:
-> 1. Go to `...` on the top right of your database
-> 2. Click on the `Properties` Tab
-> 3. Click the eye on the `ID` Property
-> 4. It should get crossed out and disapear from your database!
+## Scheduled synchronization
 
-<sub>Other: Docker addition doesn't run because the .env file is not set up</sub>
+`vercel.json` invokes `/api/cron/sync` hourly. The endpoint only processes integrations whose `next_sync_at` value is due and requires:
 
-[^1]: [Source of Gifs and for more information on Notion Integrations](https://developers.notion.com/docs/create-a-notion-integration)
+```text
+Authorization: Bearer <CRON_SECRET>
+```
 
+Vercel sends this header automatically when the project has a matching `CRON_SECRET`. On another platform, configure its scheduler to send the same header.
+
+The endpoint processes a limited batch per invocation. Run it more frequently or move execution to a durable job queue before supporting a large user population.
+
+## Verification
+
+```bash
+npm test
+npm run lint
+npm run build
+npm audit
+```
+
+The unit tests cover credential encryption, tamper detection, Canvas bearer authentication and pagination boundaries, Notion page ID parsing, and schedule calculation.
+
+## Docker
+
+Build the production image:
+
+```bash
+docker build -t sprigate .
+```
+
+Run it with a production environment file:
+
+```bash
+docker run --env-file .env.production -p 3000:3000 sprigate
+```
+
+The multi-stage image builds the Next.js standalone server on Node.js 22 and runs it as the unprivileged `node` user.
+
+## Current limitations
+
+- Canvas and Notion API behavior still needs end-to-end verification against configured test accounts.
+- Automatic synchronization runs inside a cron request; a durable queue is recommended at larger scale.
+- Contact messages are stored in Supabase for review; email notification delivery is not configured.
+- The legacy `src/internal` prototype should be removed after feature parity is confirmed.
+
+## Security
+
+Please report vulnerabilities according to [SECURITY.md](./SECURITY.md). Do not include Canvas tokens, Notion tokens, Supabase keys, or other secrets in issues or logs.

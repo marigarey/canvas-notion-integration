@@ -59,8 +59,8 @@ export function normalizeCanvasUrl(value: string) {
     throw new CanvasApiError("Enter only the Canvas site address.");
   }
 
-  url.pathname = url.pathname.replace(/\/+$/, "");
-  return url.origin + url.pathname;
+  const pathname = url.pathname.replace(/\/+$/, "");
+  return url.origin + pathname;
 }
 
 function getNextLink(header: string | null) {

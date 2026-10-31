@@ -11,6 +11,7 @@ export type UserIntegration = {
   notion_data_source_id: string | null;
   selected_course_ids: string[];
   sync_frequency: SyncFrequency;
+  next_sync_at: string | null;
   last_synced_at: string | null;
   last_sync_status: SyncStatus | null;
   last_sync_message: string | null;

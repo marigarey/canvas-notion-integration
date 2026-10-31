@@ -4,7 +4,7 @@ import { CanvasClient } from "@/lib/canvas/client";
 import type { CanvasCourse } from "@/lib/canvas/types";
 import { getIntegration } from "@/lib/integrations/repository";
 import { decryptCredential } from "@/lib/security/credentials";
-import { saveConnections, saveCourseSelection } from "../actions";
+import { saveConnections, saveCourseSelection, saveSchedule } from "../actions";
 
 type SetupPageProps = {
   searchParams: Promise<{ error?: string; saved?: string }>;
@@ -104,6 +104,31 @@ export default async function SetupPage({ searchParams }: SetupPageProps) {
             </form>
           </Box>
         ) : null}
+
+        <Box className="rounded-md" p="6" style={{ outline: "var(--green-a6) solid 2px" }}>
+          <Heading size="5">Automatic synchronization</Heading>
+          <Text as="p" mt="2" color="gray">
+            Sprigate checks hourly and runs when your selected interval is due.
+          </Text>
+          <form action={saveSchedule}>
+            <Flex gap="3" mt="4" align="end" wrap="wrap">
+              <label>
+                <Text as="div" mb="2" weight="medium">Frequency</Text>
+                <select
+                  name="frequency"
+                  defaultValue={integration?.sync_frequency ?? "manual"}
+                  style={{ minHeight: 40, padding: "0 12px", borderRadius: 6 }}
+                >
+                  <option value="manual">Manual only</option>
+                  <option value="daily">Daily</option>
+                  <option value="weekly">Weekly</option>
+                  <option value="monthly">Monthly</option>
+                </select>
+              </label>
+              <Button type="submit" variant="soft">Save schedule</Button>
+            </Flex>
+          </form>
+        </Box>
       </Flex>
     </Container>
   );
