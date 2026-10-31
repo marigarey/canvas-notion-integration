@@ -5,8 +5,8 @@ Please be safe :D
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 2.2.15  | notionhq/client    |
-| ^16.4.5 | dotenv             |
+| ^2.2.17 | notionhq/client    |
+| ^16.4.7 | dotenv             |
 
 ## Reporting a Vulnerability
 
