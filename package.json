@@ -1,16 +1,19 @@
 {
+  "name": "canvas-notion-integration",
+  "version": "2.2.0",
+  "private": true,
+  "description": "Synchronize Canvas assignments and discussions to a personal Notion database.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node src/main.js",
+    "dry-run": "node src/main.js --dry-run",
+    "test": "node --test",
+    "check": "node --check src/config.js && node --check src/canvas.js && node --check src/notion.js && node --check src/state.js && node --check src/main.js && npm test"
+  },
   "dependencies": {
-    "@notionhq/client": "^2.2.17",
-    "dotenv": "^16.4.7"
-  },
-  "name": "nodemon",
-  "homepage": "http://nodemon.io",
-  "...": "... other standard package.json values",
-  "nodemonConfig": {
-    "ignore": [
-      "**/img/**"
-    ],
-    "delay": 2500
-  },
-  "license": "MIT"
+    "@notionhq/client": "5.28.0"
+  }
 }

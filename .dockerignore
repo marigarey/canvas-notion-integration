@@ -7,6 +7,10 @@
 **/.classpath
 **/.dockerignore
 **/.env
+**/.env.*
+!**/.env.example
+**/.canvas-notion-state.json
+**/.canvas-notion-state.json.tmp
 **/.git
 **/.gitignore
 **/.project
@@ -30,6 +34,7 @@
 **/values.dev.yaml
 **/build
 **/dist
+**/coverage
 LICENSE.txt
 README.md
 SECURITY.md
