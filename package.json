@@ -14,6 +14,6 @@
     "check": "node --check src/config.js && node --check src/canvas.js && node --check src/notion.js && node --check src/state.js && node --check src/main.js && npm test"
   },
   "dependencies": {
-    "@notionhq/client": "5.28.0"
+    "@notionhq/client": "5.31.1"
   }
 }
